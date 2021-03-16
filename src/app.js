@@ -231,7 +231,7 @@ d3.json(countyURL).then(
 
                 var yScale = d3.scaleLinear()
                 .domain([0, d3.max(dataset, function(d){
-                    return d['population'];
+                    return d['average_daily_wage'];
                 })])
                 .range([h, 0]);
 
@@ -241,19 +241,16 @@ d3.json(countyURL).then(
                     return d['population']
                 })]).range([ 0, width ]);
 
-                var xAxis = scatter.append("g")    
-
-                .attr("transform", "translate(0," + height + ")")
-                .call(d3.axisBottom(x));
+                scatter.append("g").call(d3.axisBottom(x)).attr("class", "right");
 
                 // Add Y axis
                 var y = d3.scaleLinear()
                 .domain([0, d3.max(dataset, function(d){
-                    return d['population'];
+                    return d['average_daily_wage'];
                 })]).range([ height, 0]);
-                scatter.append("g")
-                .call(d3.axisLeft(y));
 
+                scatter.append("g")
+                .call(d3.axisLeft(y)).attr("class", "left");
 
                 scatter.selectAll("circle")
                 .data(dataset) // gets the data
@@ -262,15 +259,15 @@ d3.json(countyURL).then(
                 .attr("cx", function(d){
                     return xScale(d['population']); // gives our x coordinate
                 })
+
                 .attr("cy", function(d){
-                    return yScale(d['population']); // gives our y coordinate
+                    return yScale(d['average_daily_wage']); // gives our y coordinate
                 })
                 .attr("r", function(d){
                     return 4; // sets the radius of each circle
                 })
                 .style("fill", "#69b3a2" )
                 .attr("opacity", 1);
-            
                 
             }
                 })

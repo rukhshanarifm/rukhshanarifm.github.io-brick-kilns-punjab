@@ -8,9 +8,14 @@ body{
 }
 
 #scatter {
-  min-height: 300px;
+  min-height: 500px;
   min-width: 300px;
 }
+
+#scatter g{
+  color: black;
+}
+
 
 #plots {
   display: flex;
@@ -71,7 +76,13 @@ g{
 }
 
 
+.left {
+  color: black;
+}
 
+.right {
+  color: black;
+}
 
 #dropdown {
 }
