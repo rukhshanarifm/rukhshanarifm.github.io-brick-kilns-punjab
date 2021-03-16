@@ -1,15 +1,15 @@
-html, body{
+html {
+  margin-left: 100px;
 }
 
 body{
 
-  justify-content: center;
-  align-items: center;
 }
 
 #scatter {
-  min-height: 500px;
-  min-width: 300px;
+
+  min-width: 700px;
+  min-height: 400px;
 }
 
 #scatter g{
@@ -21,9 +21,11 @@ body{
   display: flex;
 }
 
-svg{
-  background-color: whitesmoke;
+svg #scatter,  #canvas{
+  margin: auto;
 }
+
+
 
 #canvas{
   min-width: 1000px;
@@ -76,13 +78,7 @@ g{
 }
 
 
-.left {
-  color: black;
-}
 
-.right {
-  color: black;
-}
 
 #dropdown {
 }

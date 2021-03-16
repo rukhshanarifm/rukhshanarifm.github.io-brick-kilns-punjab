@@ -94,8 +94,8 @@ var getcolorScale = function(text, res) {
 let text = 'population';
 
 var margin = {top: 35, right: 35, bottom: 35, left: 35},
-    w = 300 - margin.left - margin.right,
-    h = 225 - margin.top - margin.bottom;
+    w = 500,
+    h = 825;
 
 projection = d3.geoMercator()
     .center([68.38, 31.5])
@@ -169,7 +169,9 @@ d3.json(countyURL).then(
                         function renderChart() {
                             const t = transition().duration(300);
                             let map = canvas.selectAll('path').data(countyData)
-                            
+                            var g = svg.attr('height', height)
+                            .append('g');
+
                             map.enter().append('path')
                             .attr('d', d3.geoPath().projection(projection))
                             .attr('class', 'county').style("stroke", "white")
@@ -221,13 +223,13 @@ d3.json(countyURL).then(
                         canvas.selectAll("path").remove();
                         renderChart();
                 });
+
                 let dataset = educationData;
                 console.log(dataset);
                 var xScale = d3.scaleLinear()
                 .domain([0, d3.max(dataset, function(d){
                     return d['population']
-                })])
-                .range([0, w]);
+                })]).range([0, w]);
 
                 var yScale = d3.scaleLinear()
                 .domain([0, d3.max(dataset, function(d){
@@ -267,7 +269,7 @@ d3.json(countyURL).then(
                     return 4; // sets the radius of each circle
                 })
                 .style("fill", "#69b3a2" )
-                .attr("opacity", 1);
+                .attr("opacity", 4);
                 
             }
                 })
