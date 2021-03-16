@@ -95,7 +95,7 @@ let text = 'population';
 
 var margin = {top: 35, right: 35, bottom: 35, left: 35},
     w = 500,
-    h = 825;
+    h = 625;
 
 projection = d3.geoMercator()
     .center([68.38, 31.5])
@@ -169,8 +169,6 @@ d3.json(countyURL).then(
                         function renderChart() {
                             const t = transition().duration(300);
                             let map = canvas.selectAll('path').data(countyData)
-                            var g = svg.attr('height', height)
-                            .append('g');
 
                             map.enter().append('path')
                             .attr('d', d3.geoPath().projection(projection))

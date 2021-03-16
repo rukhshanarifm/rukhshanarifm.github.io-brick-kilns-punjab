@@ -2,9 +2,10 @@ html {
   margin-left: 100px;
 }
 
-body{
 
-}
+body {
+  font-family: 'Arvo', serif;
+  }
 
 #scatter {
 
@@ -16,7 +17,20 @@ body{
   color: black;
 }
 
+#sidepanel {
+  border: 2px solid black;
+}
 
+#sidepanel p{
+  margin-left: 10px;
+  font-weight: normal;
+}
+
+
+#sidepanel-h2 { 
+  margin: auto;
+  text-align: center;
+}
 #plots {
   display: flex;
 }
