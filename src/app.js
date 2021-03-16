@@ -221,7 +221,7 @@ d3.json(countyURL).then(
                         canvas.selectAll("path").remove();
                         renderChart();
                 });
-                let dataset=educationData;
+                let dataset = educationData;
                 console.log(dataset);
                 var xScale = d3.scaleLinear()
                 .domain([0, d3.max(dataset, function(d){
