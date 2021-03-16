@@ -34,21 +34,21 @@ d3.select("#dropdown")
 
 
 var getcolorScale = function(text, res) {
-    if (text === "population") {
 
+    if (text === "population") {
         if (res == "") {
-            return 'white'
+            'white'
         }
         if(res <= 1500000){
-            return 'tomato'
+            return d3.schemePuBuGn[9][2]
         }else if(res<= 3500000){
-            return 'orange'
+            return d3.schemePuBuGn[9][3]
         }else if(res <= 5500000){
-            return 'lightgreen'
+            return d3.schemePuBuGn[9][4]
         }else if (res <= 8000000){
-            return 'green'
+            return d3.schemePuBuGn[9][5]
         }else if (res <= 13500000){
-            return 'blue'
+            return d3.schemePuBuGn[9][7]
         }
         
     }
@@ -58,15 +58,15 @@ var getcolorScale = function(text, res) {
             return 'white'
         }
         if(res <= 150){
-            return 'tomato'
+            return d3.schemePuBuGn[9][2]
         }else if(res<= 350){
-            return 'orange'
+            return d3.schemePuBuGn[9][3]
         }else if(res <= 550){
-            return 'lightgreen'
+            return d3.schemePuBuGn[9][4]
         }else if (res <= 800){
-            return 'green'
+            return d3.schemePuBuGn[9][5]
         }else if (res <= 1350){
-            return 'blue'
+            return d3.schemePuBuGn[9][7]
         }
 
     }
@@ -76,15 +76,15 @@ var getcolorScale = function(text, res) {
             return 'white'
         }
         if(res <= 150000000){
-            return 'tomato'
+            return d3.schemePuBuGn[9][2]
         }else if(res<= 350000000){
-            return 'orange'
+            return d3.schemePuBuGn[9][3]
         }else if(res <= 550000000){
-            return 'lightgreen'
+            return d3.schemePuBuGn[9][4]
         }else if (res <= 800000000){
-            return 'green'
+            return d3.schemePuBuGn[9][5]
         }else if (res <= 1350000000){
-            return 'blue'
+            return d3.schemePuBuGn[9][6]
         }
     }
 
@@ -125,7 +125,7 @@ d3.json(countyURL).then(
                         const educationData = data
                         canvas.selectAll('path').data(countyData).enter().append('path')
                             .attr('d', d3.geoPath().projection(projection))
-                            .attr('class', 'county').style("stroke", "black")
+                            .attr('class', 'county').style("stroke", "white")
                             .style("stroke-width", .5)
                             .attr('data-dist', (countyDataItem) => {
                                 return countyDataItem.properties['DISTRICT']
@@ -172,7 +172,7 @@ d3.json(countyURL).then(
                             
                             map.enter().append('path')
                             .attr('d', d3.geoPath().projection(projection))
-                            .attr('class', 'county').style("stroke", "black")
+                            .attr('class', 'county').style("stroke", "white")
                             .style("stroke-width", .5)
                             .attr('data-dist', (countyDataItem) => {
                                 return countyDataItem.properties['DISTRICT']
