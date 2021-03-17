@@ -5,7 +5,8 @@ import './main.css';
 
 let countyURL = 'https://gist.githubusercontent.com/saadkhalid90/96621ed3513edce398105ad58917a003/raw/e0b29f46a0a9e7a6c9016ce9b9ff88ebfcda257e/Punjab_dist.topojson'
 let educationURL = 'https://gist.githubusercontent.com/rukhshanarifm/57a73479817642481f911b0fd8d7ac66/raw/aaa27090a056c406738f1432abf1babbd6de7e60/csvjson%2520(2).json'
-let csv = 'https://gist.githubusercontent.com/saadkhalid90/96621ed3513edce398105ad58917a003/raw/e0b29f46a0a9e7a6c9016ce9b9ff88ebfcda257e/data_dist.csv'
+let tehsilURL = 'https://gist.githubusercontent.com/rukhshanarifm/3f1bcea01c9bea09bbdc13e09d250aea/raw/08c3250d51d762ae88845b2b9efca0ad94ff3eff/tehsil_level.json'
+
 let countyData
 
 var dropdown_options = [ { value: "population",
@@ -91,6 +92,12 @@ var getcolorScale = function(text, res) {
     return colorScale
 }
 
+function filterDistrict(data, dist) {
+    return data.filter(d=>d['db_district'] === dist);
+  }
+  
+  
+
 let text = 'population';
 
 var margin = {top: 35, right: 35, bottom: 35, left: 35},
@@ -103,12 +110,6 @@ projection = d3.geoMercator()
     .scale([175 * 20]);
 
 var scatter = d3.select("#scatter")
-  .append("svg")
-  .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
-
-var scatter2 = d3.select("#scatter2")
   .append("svg")
   .append("g")
     .attr("transform",
@@ -129,111 +130,139 @@ d3.json(countyURL).then(
                         console.log(error)
                     }else{
                         const educationData = data
-                        canvas.selectAll('path').data(countyData).enter().append('path')
-                            .attr('d', d3.geoPath().projection(projection))
-                            .attr('class', 'county').style("stroke", "white")
-                            .style("stroke-width", .5)
-                            .attr('data-dist', (countyDataItem) => {
-                                return countyDataItem.properties['DISTRICT']
-                            })
-                            .attr('fill', (countyDataItem) => {
-                                let id = countyDataItem.properties['DISTRICT']
-                                let county = educationData.find((item) => {
-                                    return item['Name'] === id
+                        d3.json(tehsilURL).then(
+                            (data, error) => {
+                                if(error){
+                                    console.log(error)} 
+                                    else{
+                                        let tehsilData = data;
+                                        console.log(tehsilData);
+                                        canvas.selectAll('path').data(countyData).enter().append('path')
+                                            .attr('d', d3.geoPath().projection(projection))
+                                            .attr('class', 'county').style("stroke", "white")
+                                            .style("stroke-width", .5)
+                                            .attr('data-dist', (countyDataItem) => {
+                                                return countyDataItem.properties['DISTRICT']
+                                            })
+                                            .attr('fill', (countyDataItem) => {
+                                                let id = countyDataItem.properties['DISTRICT']
+                                                let county = educationData.find((item) => {
+                                                    return item['Name'] === id
+                                                })
+
+                                                let res= county['population'];
+                                                let text = 'population'
+                                                return getcolorScale(text, res) 
+
+                                            })
+                                            .attr('data-pop', (countyDataItem) => {
+                                                let id = countyDataItem.properties['DISTRICT']
+                                                let county = educationData.find((item) => {
+                                                    return item['Name'] === id
+                                                })
+                                                let percentage = county['population']
+                                                console.log(percentage);
+                                                return percentage
+                                        })
+                                        .on('mouseover', (countyDataItem)=> {
+                                            tooltip.transition()
+                                                .style('visibility', 'visible')
+                                            let id = countyDataItem.properties['DISTRICT']
+                                            let county = educationData.find((item) => {
+                                                return item['Name'] === id
+                                            })
+                                            console.log(county['Name']);
+                                            let filteredData = filterDistrict(tehsilData, county['Name']);
+                                            var scatter2 = d3.select("#scatters")
+                                            .append("svg")
+                                            .attr('id', 'scatter2')
+                                            .append("g")
+                                            .attr("transform",
+                                            "translate(" + margin.left + "," + margin.top + ")");
+                                            drawBar(filteredData, 'db_tehsil', 'age', scatter2)
+                                            console.log(filteredData);
+                                            tooltip.text(county['Name'] + ' : ' + county['population'])
+                                            tooltip.attr('data-pop', county['population'])
+                                        })
+                                        .on('mouseout', (countyDataItem) => {
+                                            tooltip.transition()
+                                                .style('visibility', 'hidden')
+                                            d3.selectAll("#scatter2").remove();
+
+                                        })
+                                        //look into render Chart
+                                        function renderChart() {
+                                            const t = transition().duration(300);
+                                            let map = canvas.selectAll('path').data(countyData)
+
+                                            map.enter().append('path')
+                                            .attr('d', d3.geoPath().projection(projection))
+                                            .attr('class', 'county').style("stroke", "white")
+                                            .style("stroke-width", .5)
+                                            .attr('data-dist', (countyDataItem) => {
+                                                return countyDataItem.properties['DISTRICT']
+                                            }).on('mouseover', (countyDataItem)=> {
+                                                tooltip.transition()
+                                                    .style('visibility', 'visible')
+                                                let id = countyDataItem.properties['DISTRICT']
+                                                let county = educationData.find((item) => {
+                                                    return item['Name'] === id
+                                                })
+                                                //account for missing values
+                                                tooltip.text(county['Name'] + ' : ' + county[text])
+                                                tooltip.attr('data-pop', county[text])
+                                                console.log(county['Name']);
+                                                let filteredData = filterDistrict(tehsilData, county['Name']);
+                                                var scatter2 = d3.select("#scatters")
+                                                .append("svg")
+                                                .attr('id', 'scatter2')
+                                                .append("g")
+                                                .attr("transform",
+                                                "translate(" + margin.left + "," + margin.top + ")");
+                                                drawBar(filteredData, 'db_tehsil', 'age', scatter2)
+                                                console.log(filteredData);
+                                            })
+                                            .on('mouseout', (countyDataItem) => {
+                                                d3.selectAll("#scatter2").remove();
+                                                tooltip.transition()
+                                                    .style('visibility', 'hidden')
+                                            }).attr("fill", "white").transition().duration(500)
+                                            
+                                            .attr('fill', (countyDataItem) => {
+                                                let id = countyDataItem.properties['DISTRICT']
+                                                let county = educationData.find((item) => {
+                                                    return item['Name'] === id
+                                                })
+
+                                                let res = county[text];
+                                                return getcolorScale(text, res) 
+
+                                            })
+                                            .attr('data-pop', (countyDataItem) => {
+                                                let id = countyDataItem.properties['DISTRICT']
+                                                let county = educationData.find((item) => {
+                                                    return item['Name'] === id
+                                                })
+                                                let percentage = county[text]
+                                                console.log(percentage);
+                                                return percentage                                
+                                        })
+                                    }
+
+                                    var dropDown = d3.select("#dropdown");
+                                    dropDown.on("change", function() {
+                                        text = document.getElementById("dropdown").value
+                                        console.log(text);
+                                        canvas.selectAll("path").remove();
+                                        renderChart();
+                                });
+
+                                //drawBar(educationData, 'district', 'average_daily_wage', scatter)
+                                //drawBar(educationData, 'district', 'average_age', scatter2)
+
+                            }
+                        })}
                                 })
-
-                                let res= county['population'];
-                                let text = 'population'
-                                return getcolorScale(text, res) 
-
-                            })
-                            .attr('data-pop', (countyDataItem) => {
-                                let id = countyDataItem.properties['DISTRICT']
-                                let county = educationData.find((item) => {
-                                    return item['Name'] === id
-                                })
-                                let percentage = county['population']
-                                console.log(percentage);
-                                return percentage
-                        })
-                        .on('mouseover', (countyDataItem)=> {
-                            tooltip.transition()
-                                .style('visibility', 'visible')
-
-                            let id = countyDataItem.properties['DISTRICT']
-                            let county = educationData.find((item) => {
-                                return item['Name'] === id
-                            })
-                            tooltip.text(county['Name'] + ' : ' + county['population'])
-                            tooltip.attr('data-pop', county['population'])
-                        })
-                        .on('mouseout', (countyDataItem) => {
-                            tooltip.transition()
-                                .style('visibility', 'hidden')
-                        })
-                        //look into render Chart
-                        function renderChart() {
-                            const t = transition().duration(300);
-                            let map = canvas.selectAll('path').data(countyData)
-
-                            map.enter().append('path')
-                            .attr('d', d3.geoPath().projection(projection))
-                            .attr('class', 'county').style("stroke", "white")
-                            .style("stroke-width", .5)
-                            .attr('data-dist', (countyDataItem) => {
-                                return countyDataItem.properties['DISTRICT']
-                            }).on('mouseover', (countyDataItem)=> {
-                                tooltip.transition()
-                                    .style('visibility', 'visible')
-    
-                                let id = countyDataItem.properties['DISTRICT']
-                                let county = educationData.find((item) => {
-                                    return item['Name'] === id
-                                })
-                                //account for missing values
-                                tooltip.text(county['Name'] + ' : ' + county[text])
-                                tooltip.attr('data-pop', county[text])
-                            })
-                            .on('mouseout', (countyDataItem) => {
-                                tooltip.transition()
-                                    .style('visibility', 'hidden')
-                            }).attr("fill", "white").transition().duration(500)
-                            
-                            .attr('fill', (countyDataItem) => {
-                                let id = countyDataItem.properties['DISTRICT']
-                                let county = educationData.find((item) => {
-                                    return item['Name'] === id
-                                })
-
-                                let res = county[text];
-                                return getcolorScale(text, res) 
-
-                            })
-                            .attr('data-pop', (countyDataItem) => {
-                                let id = countyDataItem.properties['DISTRICT']
-                                let county = educationData.find((item) => {
-                                    return item['Name'] === id
-                                })
-                                let percentage = county[text]
-                                console.log(percentage);
-                                return percentage                                
-                        })
-
-                    }
-
-                    var dropDown = d3.select("#dropdown");
-                    dropDown.on("change", function() {
-                        text = document.getElementById("dropdown").value
-                        console.log(text);
-                        canvas.selectAll("path").remove();
-                        renderChart();
-                });
-
-                drawBar(educationData, 'district', 'average_daily_wage', scatter)
-                drawBar(educationData, 'district', 'average_age', scatter2)
-
-            }
-                })
             }
         }
 );

@@ -61,6 +61,7 @@ h1 {
   min-height: 400px;
   padding: 5px;
   margin-left: -600px;
+  margin-top: -140px;
 
 }
 
@@ -115,6 +116,7 @@ g{
 }
 
 #tooltip{
+  position: absolute;
   visibility: hidden;
   height: auto;
   width: auto;
