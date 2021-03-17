@@ -98,16 +98,22 @@ var margin = {top: 35, right: 35, bottom: 35, left: 35},
     h = 625;
 
 projection = d3.geoMercator()
-    .center([68.38, 31.5])
-    .scale([150 * 25]);
+    //right/left, up/down
+    .center([77.38, 31.5])
+    .scale([175 * 20]);
 
 var scatter = d3.select("#scatter")
   .append("svg")
-    .attr("width", w + margin.left + margin.right)
-    .attr("height", h + margin.top + margin.bottom)
   .append("g")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
+
+var scatter2 = d3.select("#scatter2")
+  .append("svg")
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
 
 d3.json(countyURL).then(
     (data, error) => {
@@ -184,6 +190,7 @@ d3.json(countyURL).then(
                                 let county = educationData.find((item) => {
                                     return item['Name'] === id
                                 })
+                                //account for missing values
                                 tooltip.text(county['Name'] + ' : ' + county[text])
                                 tooltip.attr('data-pop', county[text])
                             })
@@ -222,58 +229,78 @@ d3.json(countyURL).then(
                         renderChart();
                 });
 
-                let dataset = educationData;
-                console.log(dataset);
-                var xScale = d3.scaleLinear()
-                .domain([0, d3.max(dataset, function(d){
-                    return d['population']
-                })]).range([0, w]);
+                drawBar(educationData, 'district', 'average_daily_wage', scatter)
+                drawBar(educationData, 'district', 'average_age', scatter2)
 
-                var yScale = d3.scaleLinear()
-                .domain([0, d3.max(dataset, function(d){
-                    return d['average_daily_wage'];
-                })])
-                .range([h, 0]);
-
-                // Add X axis
-                var x = d3.scaleLinear()
-                .domain([0, d3.max(dataset, function(d){
-                    return d['population']
-                })]).range([ 0, width ]);
-
-                scatter.append("g").call(d3.axisBottom(x)).attr("class", "right");
-
-                // Add Y axis
-                var y = d3.scaleLinear()
-                .domain([0, d3.max(dataset, function(d){
-                    return d['average_daily_wage'];
-                })]).range([ height, 0]);
-
-                scatter.append("g")
-                .call(d3.axisLeft(y)).attr("class", "left");
-
-                scatter.selectAll("circle")
-                .data(dataset) // gets the data
-                .enter()
-                .append("circle") 
-                .attr("cx", function(d){
-                    return xScale(d['population']); // gives our x coordinate
-                })
-
-                .attr("cy", function(d){
-                    return yScale(d['average_daily_wage']); // gives our y coordinate
-                })
-                .attr("r", function(d){
-                    return 4; // sets the radius of each circle
-                })
-                .style("fill", "#69b3a2" )
-                .attr("opacity", 4);
-                
             }
                 })
             }
         }
 );
+
+function drawBar(data, xvar, yvar, svg_name) {
+
+    let sw = 160
+    let sh = 160
+
+    let dataset = data;
+
+
+    console.log(dataset);
+    var xScale = d3.scaleLinear()
+    .domain([0, d3.max(dataset, function(d){
+        return d[xvar]
+    })]).range([0, sw]);
+
+    var yScale = d3.scaleLinear()
+    .domain([0, d3.max(dataset, function(d){
+        return d[yvar];
+    })])
+    .range([sh, 0]);
+
+
+    // Add X axis
+    var x = d3.scaleLinear()
+    .domain([0, d3.max(dataset, function(d){
+        return d[xvar]
+    })]).range([ 0, sw ]);
+
+    var x = d3.scaleBand()
+    .range([ 0, width ])
+    .domain(data.map(function(d) { return d[xvar]; }))
+    .padding(0.2);
+
+
+    svg_name.append("g")
+    .attr("transform", "translate(0," + sh+ ")")
+    .call(d3.axisBottom(x))
+    .selectAll("text")
+    .attr("transform", "translate(-10,0)rotate(-45)")
+    .style("text-anchor", "end");
+
+
+    // Add Y axis
+    var y = d3.scaleLinear()
+    .domain([0, d3.max(dataset, function(d){
+        return d[yvar];
+    })]).range([ sh, 0]);
+
+    svg_name.append("g")
+    .call(d3.axisLeft(y)).attr("class", "left");
+
+    svg_name.selectAll("circle")
+    .data(dataset) // gets the datas
+    .enter()
+    .append("rect") 
+    .attr("x", function(d){
+        return x(d[xvar]); // gives our x coordinate
+    }).attr("y", function(d){
+        return y(d[yvar]); // gives our y coordinate
+    }).attr("width", x.bandwidth())
+    .attr("height", function(d) { return sh - y(d[yvar]); })
+    .style("fill", "#69b3a2" ).attr("opacity", 4);
+
+}
 
 //ADD A BAR CHART 
 // ADD A FUNCTION TO UPDATE THE BAR GRAPH BASED ON THE SELECTED DISTRICT

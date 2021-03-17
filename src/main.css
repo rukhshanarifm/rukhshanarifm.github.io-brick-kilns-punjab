@@ -1,5 +1,5 @@
 html {
-margin: 50px;
+margin: 20px;
 }
 
 
@@ -38,21 +38,38 @@ h1 {
   text-align: center;
 
 }
-#pushleft {
-}
+
 #intro {
   display: flex;
   flex-direction:row;
   padding:5px; /* this */
 }
 
+#scatters {
+  display: flex;
+  flex-direction: column;
+}
 #scatter {
   min-width: 700px;
   min-height: 400px;
+  margin-left: -600px;
+  padding: 5px;
+}
+
+#scatter2 {
+  min-width: 700px;
+  min-height: 400px;
+  padding: 5px;
+  margin-left: -600px;
+
 }
 
 #scatter g{
   color: black;
+}
+
+#scatter2 g{
+  color: black
 }
 
 #sidepanel {
@@ -71,6 +88,9 @@ h1 {
 }
 #plots {
   display: flex;
+  flex-direction:row;
+  padding:50px; /* this */
+
 }
 
 svg #scatter,  #canvas{
@@ -79,11 +99,11 @@ svg #scatter,  #canvas{
 
 
 
+
 #canvas{
   min-width: 1000px;
   min-height: 600px;
-  margin-left: -500px;
-  padding:0px;
+  padding:5px;
 }
 
 .county:hover{
@@ -133,4 +153,13 @@ g{
 
 
 #dropdown {
+  position: relative;
+  display: inline-block;
 }
+
+
+
+.dropdown:hover{
+  display: block;
+}
+
