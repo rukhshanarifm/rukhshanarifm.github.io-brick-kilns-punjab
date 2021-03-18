@@ -251,7 +251,7 @@ d3.json(countyURL).then(
                                             .attr("transform",
                                             "translate(" + margin.left + "," + margin.top + ")");
                                             drawBar(filteredData2, 'db_tehsil', 'age', scatter2, true)
-                                            addToolTip(tooltip, county);
+
                                         })
                                         .on('mouseout', (countyDataItem) => {
                                             
@@ -259,6 +259,9 @@ d3.json(countyURL).then(
                                             let county = educationData.find((item) => {
                                             return item['Name'] === id
                                         })
+
+                                            d3.selectAll("#scatter").remove();
+                                            d3.selectAll("#scatter2").remove();
 
                                             console.log(county['Name']);
                                             var xScale = d3.scaleBand()
