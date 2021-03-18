@@ -63,25 +63,7 @@
      <select id="dropdown"></select>
      <h2>Hover over each district to view tehsil wise graphs</h2>
 
-    <div id='tooltip'></div>
-    
-    <div id = "plots"> 
-    <section>
-        <svg id='canvas'> </svg>    
-    </section>
-
-    <section>
-        <div id='scatters'>
-        <svg id='scatter'></svg>
-    </div>
-
-    </section>
-
-   
-
-</div>
-
-    <svg id='legend'>
+     <svg id='legend'>
         <g>
             <rect x="10" y="0" width="40" height="40" fill="tomato"></rect>
             <text x="60" y="20" fill="black">Less than 1.5 million</text>
@@ -99,6 +81,23 @@
             <text x="60" y="140" fill="black">More than 45%</text>
         </g>
     </svg>
+
+    <div id = "plots"> 
+    <section>
+        <svg id='canvas'> </svg>    
+    </section>
+
+    <section id='test'>
+        <div id='tooltip'></div>
+        <div id='scatters'>
+        <svg id='scatter'></svg>
+    </div>
+
+    </section>
+
+   
+
+</div>
 
 
 </body>
