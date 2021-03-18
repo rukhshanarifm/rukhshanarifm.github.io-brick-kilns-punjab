@@ -96,7 +96,9 @@ function filterDistrict(data, dist) {
     return data.filter(d=>d['db_district'] === dist);
   }
   
-  
+function filterDistrict_two(data, dist) {
+   return data.filter(d=>d['Name'] === dist);
+} 
 
 let text = 'population';
 
@@ -130,7 +132,9 @@ d3.json(countyURL).then(
                                 if(error){
                                     console.log(error)} 
                                     else{
+
                                         let tehsilData = data;
+
                                         console.log(tehsilData);
                                         canvas.selectAll('path').data(countyData).enter().append('path')
                                             .attr('d', d3.geoPath().projection(projection))
@@ -165,10 +169,34 @@ d3.json(countyURL).then(
                                             let id = countyDataItem.properties['DISTRICT']
                                             let county = educationData.find((item) => {
                                                 return item['Name'] === id
-                                            })
+                                            })}).style("cursor", "pointer")
+
+                                        .on('click', (countyDataItem) => {
+                                            tooltip.transition()
+                                            .style('visibility', 'visible')
+                                            let id = countyDataItem.properties['DISTRICT']
+                                            let county = educationData.find((item) => {
+                                            return item['Name'] === id
+                                        })
+
+                                            d3.selectAll("#circle").remove();
+                                            d3.selectAll("#circle1").remove();
+                                            d3.selectAll("#scatter").remove();
+                                            d3.selectAll("#scatter2").remove();
+                                            
                                             console.log(county['Name']);
-
-
+                                            var xScale = d3.scaleBand()
+                                            .range([ 0, width ])
+                                            .domain(data.map(function(d) { return d['Name']; }))
+                                            .padding(0.2);
+    
+                                            var yScale = d3.scaleBand()
+                                            .range([ 0, width ])
+                                            .domain(data.map(function(d) { return d['kiln_distance_to_nearby_school']; }))
+                                            .padding(0.2);
+                                            
+                                            let subdata = filterDistrict_two(educationData, county['Name'])
+                                            drawBubble(subdata);
 
                                             let filteredData = filterDistrict(tehsilData, county['Name']);
                                             var scatter = d3.select("#scatters")
@@ -177,9 +205,7 @@ d3.json(countyURL).then(
                                             .append("g")
                                             .attr("transform",
                                             "translate(" + margin.left + "," + margin.top + ")");
-                                            drawBar(filteredData, 'db_tehsil', 'perc_nonzero_wage', scatter)
-
-
+                                            drawBar(filteredData, 'db_tehsil', 'perc_nonzero_wage', scatter, true)
 
                                             let filteredData2 = filterDistrict(tehsilData, county['Name']);
                                             var scatter2 = d3.select("#scatters")
@@ -188,7 +214,7 @@ d3.json(countyURL).then(
                                             .append("g")
                                             .attr("transform",
                                             "translate(" + margin.left + "," + margin.top + ")");
-                                            drawBar(filteredData2, 'db_tehsil', 'age', scatter2)
+                                            drawBar(filteredData2, 'db_tehsil', 'age', scatter2, true)
 
                                             tooltip.text(county['Name'] + ' : ' + county['population'])
                                             tooltip.attr('data-pop', county['population'])
@@ -196,12 +222,13 @@ d3.json(countyURL).then(
                                         .on('mouseout', (countyDataItem) => {
                                             tooltip.transition()
                                                 .style('visibility', 'hidden')
-                                            d3.selectAll("#scatter").remove();
-                                            d3.selectAll("#scatter2").remove();
-
                                         })
                                         //look into render Chart
                                         function renderChart() {
+                                            //d3.selectAll("#circle").remove();
+                                            //d3.selectAll("#scatter").remove();
+                                            //d3.selectAll("#scatter2").remove();
+                                            
                                             const t = transition().duration(300);
                                             let map = canvas.selectAll('path').data(countyData)
 
@@ -212,13 +239,24 @@ d3.json(countyURL).then(
                                             .attr('data-dist', (countyDataItem) => {
                                                 return countyDataItem.properties['DISTRICT']
                                             }).on('mouseover', (countyDataItem)=> {
+
                                                 tooltip.transition()
                                                     .style('visibility', 'visible')
                                                 let id = countyDataItem.properties['DISTRICT']
                                                 let county = educationData.find((item) => {
                                                     return item['Name'] === id
+                                                })}).style("cursor", "pointer")
+
+                                            .on('click', (countyDataItem) => {
+                                                let id = countyDataItem.properties['DISTRICT']
+                                                let county = educationData.find((item) => {
+                                                    return item['Name'] === id
                                                 })
                                                 //account for missing values
+                                                d3.selectAll("#circle").remove();
+                                                d3.selectAll("#scatter").remove();
+                                                d3.selectAll("#scatter2").remove();
+
                                                 tooltip.text(county['Name'] + ' : ' + county[text])
                                                 tooltip.attr('data-pop', county[text])
                                                 console.log(county['Name']);
@@ -230,6 +268,7 @@ d3.json(countyURL).then(
                                                 .append("g")
                                                 .attr("transform",
                                                 "translate(" + margin.left + "," + margin.top + ")");
+
                                                 drawBar(filteredData, 'db_tehsil', 'perc_nonzero_wage', scatter)
           
                                                 var scatter2 = d3.select("#scatters")
@@ -242,11 +281,9 @@ d3.json(countyURL).then(
                                                 console.log(filteredData);
                                             })
                                             .on('mouseout', (countyDataItem) => {
-                                                d3.selectAll("#scatter").remove();
-                                                d3.selectAll("#scatter2").remove();
                                                 tooltip.transition()
                                                     .style('visibility', 'hidden')
-                                            }).attr("fill", "white").transition().duration(500)
+                                            }).attr("fill", "white")
                                             
                                             .attr('fill', (countyDataItem) => {
                                                 let id = countyDataItem.properties['DISTRICT']
@@ -276,9 +313,8 @@ d3.json(countyURL).then(
                                         canvas.selectAll("path").remove();
                                         renderChart();
                                 });
-
-                                //drawBar(educationData, 'district', 'average_daily_wage', scatter)
-                                //drawBar(educationData, 'district', 'average_age', scatter2)
+                                drawBar(educationData, 'district', 'average_daily_wage', scatter)
+                                drawBar(educationData, 'district', 'average_age', scatter2)
 
                             }
                         })}
@@ -287,7 +323,68 @@ d3.json(countyURL).then(
         }
 );
 
-function drawBar(data, xvar, yvar, svg_name) {
+
+function drawBubble(data) {
+    let color = d3.schemeAccent
+    let subdata = data;
+    let ed_dist = 'kiln_distance_to_nearby_school';
+    let dist_health = 'kiln_closest_basichealthunit';
+    let dist_health1= 'kiln_closest_dispensary';
+    let dist_health2 = 'kiln_closest_ruralhealthcare_facility';
+
+    var circle = d3.select("#scatters")
+    .append("svg")
+    .attr('id', 'circle')
+    .append("g")
+
+    const circleEnter = circle.selectAll("circle")
+        .data(subdata)
+        .enter();
+
+    circleEnter.append("circle")
+        .attr("cx", 50)
+        .attr("cy", 10)
+        .attr("r", function(d) { return d[ed_dist]*4})
+        .attr("fill", color[0])
+        .attr("id", "circle");
+
+    const circleEnter1 = circle.selectAll("circle1")
+        .data(subdata)
+        .enter();
+
+    circleEnter1.append("circle")
+        .attr("cx", 50)
+        .attr("cy", 90)
+        .attr("r", function(d) { return d[dist_health]*4})
+        .attr("fill", color[1])
+        .attr("id", "circle1");
+
+    const circleEnter2 = circle.selectAll("circle2")
+        .data(subdata)
+        .enter();
+
+    circleEnter2.append("circle")
+        .attr("cx", 150)
+        .attr("cy", 90)
+        .attr("r", function(d) { return d[dist_health1]*4})
+        .attr("fill", color[2])
+        .attr("id", "circle2");
+
+    const circleEnter3 = circle.selectAll("circle2")
+        .data(subdata)
+        .enter();
+
+    circleEnter3.append("circle")
+        .attr("cx", 250)
+        .attr("cy", 90)
+        .attr("r", function(d) { return d[dist_health2]*4})
+        .attr("fill", color[4])
+        .attr("id", "circle3");
+
+}
+
+function drawBar(data, xvar, yvar, svg_name, transition) {
+
 
     let sw = 160
     let sh = 160
@@ -337,6 +434,18 @@ function drawBar(data, xvar, yvar, svg_name) {
     svg_name.append("g")
     .call(d3.axisLeft(y)).attr("class", "left");
 
+    if (transition===true) {
+    svg_name.selectAll("circle")
+    .data(dataset)
+    .transition().duration(400)
+    .attr("x", function(d){
+        return x(d[xvar]); // gives our x coordinate
+    }).attr("y", function(d){
+        return y(d[yvar]); // gives our y coordinate
+    }).attr("width", x.bandwidth())
+    .attr("height", function(d) { return sh - y(d[yvar]); })
+    .style("fill", "#69b3a2" ).attr("opacity", 4);
+    }
     svg_name.selectAll("circle")
     .data(dataset) // gets the datas
     .enter()
