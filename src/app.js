@@ -170,7 +170,6 @@ d3.json(countyURL).then(
 
 
 
-
                                             let filteredData = filterDistrict(tehsilData, county['Name']);
                                             var scatter = d3.select("#scatters")
                                             .append("svg")
@@ -223,7 +222,16 @@ d3.json(countyURL).then(
                                                 tooltip.text(county['Name'] + ' : ' + county[text])
                                                 tooltip.attr('data-pop', county[text])
                                                 console.log(county['Name']);
+
                                                 let filteredData = filterDistrict(tehsilData, county['Name']);
+                                                var scatter = d3.select("#scatters")
+                                                .append("svg")
+                                                .attr('id', 'scatter')
+                                                .append("g")
+                                                .attr("transform",
+                                                "translate(" + margin.left + "," + margin.top + ")");
+                                                drawBar(filteredData, 'db_tehsil', 'perc_nonzero_wage', scatter)
+          
                                                 var scatter2 = d3.select("#scatters")
                                                 .append("svg")
                                                 .attr('id', 'scatter2')
@@ -234,6 +242,7 @@ d3.json(countyURL).then(
                                                 console.log(filteredData);
                                             })
                                             .on('mouseout', (countyDataItem) => {
+                                                d3.selectAll("#scatter").remove();
                                                 d3.selectAll("#scatter2").remove();
                                                 tooltip.transition()
                                                     .style('visibility', 'hidden')
