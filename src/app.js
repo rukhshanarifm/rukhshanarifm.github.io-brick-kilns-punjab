@@ -5,7 +5,7 @@ import './main.css';
 
 let countyURL = 'https://gist.githubusercontent.com/saadkhalid90/96621ed3513edce398105ad58917a003/raw/e0b29f46a0a9e7a6c9016ce9b9ff88ebfcda257e/Punjab_dist.topojson'
 let educationURL = 'https://gist.githubusercontent.com/rukhshanarifm/57a73479817642481f911b0fd8d7ac66/raw/aaa27090a056c406738f1432abf1babbd6de7e60/csvjson%2520(2).json'
-let tehsilURL = 'https://gist.githubusercontent.com/rukhshanarifm/3f1bcea01c9bea09bbdc13e09d250aea/raw/08c3250d51d762ae88845b2b9efca0ad94ff3eff/tehsil_level.json'
+let tehsilURL = 'https://gist.githubusercontent.com/rukhshanarifm/3f1bcea01c9bea09bbdc13e09d250aea/raw/b0cc9b71081c6679223d14740c128ac52f621149/csvjson%2520(5).json'
 
 let countyData
 
@@ -109,11 +109,6 @@ projection = d3.geoMercator()
     .center([77.38, 31.5])
     .scale([175 * 20]);
 
-var scatter = d3.select("#scatter")
-  .append("svg")
-  .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
 
 
 d3.json(countyURL).then(
@@ -172,21 +167,37 @@ d3.json(countyURL).then(
                                                 return item['Name'] === id
                                             })
                                             console.log(county['Name']);
+
+
+
+
                                             let filteredData = filterDistrict(tehsilData, county['Name']);
+                                            var scatter = d3.select("#scatters")
+                                            .append("svg")
+                                            .attr('id', 'scatter')
+                                            .append("g")
+                                            .attr("transform",
+                                            "translate(" + margin.left + "," + margin.top + ")");
+                                            drawBar(filteredData, 'db_tehsil', 'perc_nonzero_wage', scatter)
+
+
+
+                                            let filteredData2 = filterDistrict(tehsilData, county['Name']);
                                             var scatter2 = d3.select("#scatters")
                                             .append("svg")
                                             .attr('id', 'scatter2')
                                             .append("g")
                                             .attr("transform",
                                             "translate(" + margin.left + "," + margin.top + ")");
-                                            drawBar(filteredData, 'db_tehsil', 'age', scatter2)
-                                            console.log(filteredData);
+                                            drawBar(filteredData2, 'db_tehsil', 'age', scatter2)
+
                                             tooltip.text(county['Name'] + ' : ' + county['population'])
                                             tooltip.attr('data-pop', county['population'])
                                         })
                                         .on('mouseout', (countyDataItem) => {
                                             tooltip.transition()
                                                 .style('visibility', 'hidden')
+                                            d3.selectAll("#scatter").remove();
                                             d3.selectAll("#scatter2").remove();
 
                                         })
