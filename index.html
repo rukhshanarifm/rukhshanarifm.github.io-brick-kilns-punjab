@@ -61,27 +61,6 @@
 <body>
      <!-- dropdown -->
      <select id="dropdown"></select>
-     <h2>Hover over each district to view tehsil wise graphs</h2>
-
-     <svg id='legend'>
-        <g>
-            <rect x="10" y="0" width="40" height="40" fill="tomato"></rect>
-            <text x="60" y="20" fill="black">Less than 1.5 million</text>
-        </g>
-        <g>
-            <rect x="10" y="40" width="40" height="40" fill="orange"></rect>
-            <text x="60" y="60" fill="black">>= 1.5 or < 3.5 million</text>
-        </g>
-        <g>
-            <rect x="10" y="80" width="40" height="40" fill="lightgreen"></rect>
-            <text x="60" y="100" fill="black">30% to 45%</text>
-        </g>
-        <g>
-            <rect x="10" y="120" width="40" height="40" fill="limegreen"></rect>
-            <text x="60" y="140" fill="black">More than 45%</text>
-        </g>
-    </svg>
-
     <div id = "plots"> 
     <section>
         <svg id='canvas'> </svg>    
@@ -99,8 +78,8 @@
 
 </div>
 
-
 </body>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.13.0/d3-legend.js"></script>
 <script src="bundle.js"></script>
 </html>

@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/Cellar/node/15.6.0/bin/node /usr/local/Cellar/yarn/1.22.10/libexec/bin/yarn.js add d3-schemeBlues
+  /usr/local/Cellar/node/15.6.0/bin/node /usr/local/Cellar/yarn/1.22.10/libexec/bin/yarn.js add d3-legendColor
 
 PATH: 
   /Library/Frameworks/Python.framework/Versions/3.7/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Users/rukhshan/anaconda3/bin:/Users/rukhshan/opt/anaconda3/condabin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/opt/local/bin:/opt/local/bin
@@ -14,7 +14,7 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/d3-schemeBlues: Not found
+  Error: https://registry.yarnpkg.com/d3-legendColor: Not found
       at Request.params.callback [as _callback] (/usr/local/Cellar/yarn/1.22.10/libexec/lib/cli.js:66988:18)
       at Request.self.callback (/usr/local/Cellar/yarn/1.22.10/libexec/lib/cli.js:140749:22)
       at Request.emit (node:events:379:20)

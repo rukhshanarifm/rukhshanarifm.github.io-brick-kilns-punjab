@@ -23,7 +23,8 @@ let projection
 
 let width = 600;
 let height = 400;
-    
+
+var svg = d3.select("#canvas");
 
 d3.select("#dropdown")
 .selectAll("option")
@@ -100,6 +101,57 @@ function filterDistrict_two(data, dist) {
    return data.filter(d=>d['Name'] === dist);
 } 
 
+function addLegend(variable) {
+    console.log(variable);
+
+    if (variable === "population") {
+        var dom = [1.5, 3.5, 5.5, 8, 13.5]
+        var ran = [d3.schemePuBuGn[9][1],
+        d3.schemePuBuGn[9][2],
+        d3.schemePuBuGn[9][3],
+        d3.schemePuBuGn[9][5],
+        d3.schemePuBuGn[9][7]]
+        var colorScale = d3.scaleLinear()
+        .domain(dom)
+        .range(ran);
+  
+    }
+
+    if (variable === "average_daily_wage") {
+        
+        var dom = ["Below Min Wage", "Equals or Above"]
+        let ran = [d3.schemePuBuGn[9][4], d3.schemePuBuGn[9][5]]
+        var colorScale = d3.scaleOrdinal()
+        .domain(dom)
+        .range(ran);
+
+    }
+
+
+    if (variable === "sum_of_bricks_produced") {
+        var dom = [150, 350, 550, 800, 1350]
+        var ran = [d3.schemePuBuGn[9][1],
+        d3.schemePuBuGn[9][2],
+        d3.schemePuBuGn[9][3],
+        d3.schemePuBuGn[9][5],
+        d3.schemePuBuGn[9][7]]
+        var colorScale = d3.scaleLinear()
+        .domain(dom)
+        .range(ran);
+  
+    }
+
+    svg.append("g")
+      .attr("class", "legendLog")
+      .attr("transform", "translate(20,80)");
+
+    var logLegend = d3.legendColor()
+        .scale(colorScale);
+    
+    svg.select(".legendLog")
+      .call(logLegend);
+}
+
 let text = 'population';
 
 var margin = {top: 35, right: 35, bottom: 35, left: 35},
@@ -108,7 +160,7 @@ var margin = {top: 35, right: 35, bottom: 35, left: 35},
 
 projection = d3.geoMercator()
     //right/left, up/down
-    .center([77.38, 31.5])
+    .center([77, 31.2])
     .scale([175 * 20]);
 
 
@@ -134,7 +186,8 @@ d3.json(countyURL).then(
                                     else{
 
                                         let tehsilData = data;
-
+                                        canvas.select("#legendLog").remove();
+                                        addLegend('population');
                                         console.log(tehsilData);
                                         canvas.selectAll('path').data(countyData).enter().append('path')
                                             .attr('d', d3.geoPath().projection(projection))
@@ -162,7 +215,7 @@ d3.json(countyURL).then(
                                                 let percentage = county['population']
                                                 console.log(percentage);
                                                 return percentage
-                                        })
+                                        }).attr("transform", "scale(1.5)")
                                         .on('mouseover', (countyDataItem)=> {
                                             tooltip.transition()
                                                 .style('visibility', 'visible')
@@ -295,9 +348,17 @@ d3.json(countyURL).then(
                                             "translate(" + margin.left + "," + margin.top + ")");
                                             drawBar(filteredData2, 'db_tehsil', 'age', scatter2, true)
                                             
+                                            var thresholdScale = d3.scaleThreshold()
+                                            .domain([ 0, 1000, 2500, 5000, 10000 ])
+                                            .range(d3.range(6)
+                                            .map(function(i) { return "q" + i + "-9"}));
+                                          
+                                            var log = d3.scaleLog()
+                                            .domain([ 0.1, 100, 1000 ])
+                                            .range(["rgb(46, 73, 123)", "rgb(71, 187, 94)"]);
+                                        
 
-
-                                            addToolTip(tooltip, county);
+                                        addToolTip(tooltip, county);
                                         }) 
                                         
 
@@ -306,7 +367,6 @@ d3.json(countyURL).then(
                                             //d3.selectAll("#circle").remove();
                                             //d3.selectAll("#scatter").remove();
                                             //d3.selectAll("#scatter2").remove();
-                                            
                                             const t = transition().duration(300);
                                             let map = canvas.selectAll('path').data(countyData)
 
@@ -316,7 +376,8 @@ d3.json(countyURL).then(
                                             .style("stroke-width", .5)
                                             .attr('data-dist', (countyDataItem) => {
                                                 return countyDataItem.properties['DISTRICT']
-                                            }).on('mouseover', (countyDataItem)=> {
+                                            }).attr("transform", "scale(1.5)")
+                                            .on('mouseover', (countyDataItem)=> {
 
                                                 tooltip.transition()
                                                     .style('visibility', 'visible')
@@ -362,8 +423,7 @@ d3.json(countyURL).then(
                                             .on('mouseout', (countyDataItem) => {
                                                 tooltip.transition()
                                                     .style('visibility', 'hidden')
-                                            }).attr("fill", "white")
-                                            
+                                            })
                                             .attr('fill', (countyDataItem) => {
                                                 let id = countyDataItem.properties['DISTRICT']
                                                 let county = educationData.find((item) => {
@@ -371,6 +431,7 @@ d3.json(countyURL).then(
                                                 })
 
                                                 let res = county[text];
+
                                                 return getcolorScale(text, res) 
 
                                             })
@@ -388,9 +449,10 @@ d3.json(countyURL).then(
                                     var dropDown = d3.select("#dropdown");
                                     dropDown.on("change", function() {
                                         text = document.getElementById("dropdown").value
-                                        console.log(text);
+                                        canvas.selectAll(".legendLog").remove();
                                         canvas.selectAll("path").remove();
                                         renderChart();
+                                        addLegend(text);
                                 });
                                 drawBar(educationData, 'district', 'average_daily_wage', scatter)
                                 drawBar(educationData, 'district', 'average_age', scatter2)
