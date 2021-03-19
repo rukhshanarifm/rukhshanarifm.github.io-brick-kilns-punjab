@@ -39,7 +39,7 @@ var getcolorScale = function(text, res) {
 
     if (text === "population") {
         if (res == "") {
-            "url(#circles-1)"
+            return "white"
         }
         if(res <= 1500000){
             return d3.schemePuBuGn[9][2]
@@ -285,8 +285,8 @@ d3.json(countyURL).then(
                                                 return item['Name'] === id
                                             })
                                             d3.select("#hover-text").remove();
-                                            addToolTip(tooltip, county);
                                             FilterAndDraw(tehsilData, county)
+                                            addToolTip(tooltip, county);
 
                                         }).style("cursor", "pointer")
                                         .on('mouseout', (countyDataItem) => {  
@@ -416,13 +416,11 @@ function addToolTip(tooltip, county) {
 
 function drawBar(data, xvar, yvar, svg_name, graph_name) {
 
-
     let sw = 160
     let sh = 160
 
     let dataset = data;
 
-    // Add X axis
     var x = d3.scaleLinear()
     .domain([0, d3.max(dataset, function(d){
         return d[xvar]
@@ -451,7 +449,7 @@ function drawBar(data, xvar, yvar, svg_name, graph_name) {
 
     if (graph_name === "nonzero_wage") {
         var y = d3.scaleLinear()
-        .domain([0,15]).range([ sh, 0]);
+        .domain([0,30]).range([ sh, 0]);
         var xlab = 'Tehsil'
         var ylab = 'Percentage of Children earning a non-zero wage'
     } else if (graph_name === "perc_all"){
@@ -475,7 +473,6 @@ function drawBar(data, xvar, yvar, svg_name, graph_name) {
     }).attr("width", x.bandwidth())
     .attr("height", function(d) { return sh - y(d[yvar]); })
     .style("fill", "#69b3a2" ).attr("opacity", 4);
-
 
     svg_name.append("text")             
     .attr("transform",
