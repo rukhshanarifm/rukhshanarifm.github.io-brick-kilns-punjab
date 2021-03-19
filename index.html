@@ -61,13 +61,26 @@
 <body>
      <!-- dropdown -->
      <select id="dropdown"></select>
+     <button id='reset' type="button">Reset Tooltip </button>
+
     <div id = "plots"> 
+
     <section>
         <svg id='canvas'> </svg>    
     </section>
 
     <section id = 'upper'>
     <section id='test'>        
+        <div id='hover-text'>
+        <h2 id='top-text'>Begin by hovering over the Map </h2>
+        <p>The tool tip of the map contains the following:</p>
+        <li>District Name</li>
+        <li>District Population</li>
+        <li>Average distance to closest school</li>
+        <li>Average Distance to closest Basic Health Unit</li>
+        <li>Average Minimum Wage</li>
+        <p>Missing Values will appear for the following districts: Mandi Bahauddin, Nankana Sahib, Bhakkar and Dera Ghazi Khan</p>
+        </div>
         <div id='tooltip'></div>
         <div id='scatters'>
         <svg id='scatter'></svg>

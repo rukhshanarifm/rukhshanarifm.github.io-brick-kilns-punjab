@@ -225,20 +225,9 @@ d3.json(countyURL).then(
                                             })
                                             d3.selectAll("#scatter").remove();
                                             d3.selectAll("#scatter2").remove();
-                                            addToolTip(tooltip, county);
+                                            d3.selectAll("#hover-text").remove()
 
                                             console.log(county['Name']);
-                                            var xScale = d3.scaleBand()
-                                            .range([ 0, width ])
-                                            .domain(data.map(function(d) { return d['Name']; }))
-                                            .padding(0.2);
-    
-                                            var yScale = d3.scaleBand()
-                                            .range([ 0, width ])
-                                            .domain(data.map(function(d) { return d['kiln_distance_to_nearby_school']; }))
-                                            .padding(0.2);
-                                            
-                                            let subdata = filterDistrict_two(educationData, county['Name'])
 
                                             let filteredData = filterDistrict(tehsilData, county['Name']);
                                             var scatter = d3.select("#scatters")
@@ -257,6 +246,8 @@ d3.json(countyURL).then(
                                             .attr("transform",
                                             "translate(" + margin.left + "," + margin.top + ")");
                                             drawBar(filteredData2, 'db_tehsil', 'age', scatter2, 'age')
+
+                                            addToolTip(tooltip, county);
 
                                         }).style("cursor", "pointer")
 
@@ -363,7 +354,6 @@ d3.json(countyURL).then(
 
                                         //look into render Chart
                                         function renderChart() {
-
                                             //d3.selectAll("#circle").remove();
                                             //d3.selectAll("#scatter").remove();
                                             //d3.selectAll("#scatter2").remove();
@@ -404,6 +394,7 @@ d3.json(countyURL).then(
                                             let county = educationData.find((item) => {
                                                 return item['Name'] === id
                                             })
+                                            d3.select("#hover-text").remove();
                                             d3.selectAll("#scatter").remove();
                                             d3.selectAll("#scatter2").remove();
                                             addToolTip(tooltip, county);
@@ -561,7 +552,7 @@ d3.json(countyURL).then(
 
 
 function addToolTip(tooltip, county) {
-    tooltip.html('<div class"style-me"><p>' 
+    tooltip.html('<div id ="later-remove"><p>' 
     + "District: " + county['Name'] + "</p>" +
     '<table> <tr> <td> ' + 'Population (in millions): </td>' +
     '<td>' + county['population']/1000000 + ' million' + 
@@ -575,7 +566,7 @@ function addToolTip(tooltip, county) {
     '<tr> <td> ' + 'Average Minimum Wage </td>' +
     '<td>' + 'PKR ' + Math.round(county['average_daily_wage'], 2)  + 
     
-    '</td> </tr> </div>')
+    '</td> </tr></div>')
     tooltip.attr('data-pop', county['population'])
 }
 
@@ -652,6 +643,34 @@ function drawBar(data, xvar, yvar, svg_name, graph_name) {
     .style("text-anchor", "middle")
     .text(ylab);  
 }
+
+
+document.getElementById("reset").addEventListener("click", function(){ 
+
+    d3.selectAll("#scatter").remove()
+    d3.selectAll("#scatter2").remove()
+    document.getElementById("tooltip").innerText = "";
+    var example = document.getElementById("#hover-text");
+
+    if(example === null){
+        var div = document.createElement("div");
+        div.id = 'hover-text';
+        div.innerHTML = `
+        <h2 id='top-text'>Begin by hovering over the Map </h2>        
+        <p>The tool tip of the map contains the following:</p> 
+        <li>District Name</li> 
+        <li>District Population</li> 
+        <li>Average distance to closest school</li>
+        <li>Average Distance to closest Basic Health Unit</li>
+        <li>Average Minimum Wage</li>
+        <p>Missing Values will appear for the following districts: Mandi Bahauddin, Nankana Sahib, Bhakkar and Dera Ghazi Khan</p>`
+    }
+
+    document.getElementById('test').appendChild(div);
+
+    console.log(tooltip);
+});
+
 
 //ADD A BAR CHART 
 // ADD A FUNCTION TO UPDATE THE BAR GRAPH BASED ON THE SELECTED DISTRICT

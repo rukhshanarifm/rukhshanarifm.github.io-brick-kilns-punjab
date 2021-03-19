@@ -66,8 +66,6 @@ h1 {
 
 }
 
-
-
 #scatter g{
   color: black;
 }
@@ -91,7 +89,6 @@ h1 {
 
 }
 
-
 #sidepanel-h2 { 
   margin: auto;
   text-align: center;
@@ -103,18 +100,16 @@ h1 {
   padding:50px; /* this */
 }
 
-svg #scatter,  #canvas{
-  margin: auto;
+#hover-text{
+margin-left: -600px;
 }
-
-
 
 #canvas{
   min-width: 550px;
   min-height: 800px;
   margin-top: -100px;
   padding:5px;
- background: #FFFAF1;
+  background: #FFFAF1;
 }
 
 
@@ -173,8 +168,21 @@ g{
   position: relative;
   margin-left: 100px;
   display: inline-block;
+  margin-top:100px;
 }
 
+#reset {
+  position: relative;
+  margin-left: 100px;
+  margin-top:100px;
+  display: inline-block;
+
+
+}
+
+#top-text {
+  
+}
 
 
 .dropdown:hover{
