@@ -96,7 +96,6 @@ h1 {
   display: flex;
   flex-direction:row;
   padding:50px; /* this */
-
 }
 
 svg #scatter,  #canvas{
@@ -126,27 +125,6 @@ g{
 
 #ed{
   margin-top:100px;
-
-}
-
-#circle1 {
-  min-width: 200px;
-  min-height: 50px;
-
-  padding: 10px;
-}
-
-#circle2 {
-  min-width: 200px;
-  min-height: 50px;
-
-  padding: 10px;
-}
-
-#circle3 {
-  min-width: 200px;
-  min-height: 50px;
-  margin-left: -500px;
 
 }
 

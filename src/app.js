@@ -625,18 +625,6 @@ function drawBar(data, xvar, yvar, svg_name, graph_name) {
     svg_name.append("g")
     .call(d3.axisLeft(y)).attr("class", "left");
 
-    if (transition===true) {
-    svg_name.selectAll("circle")
-    .data(dataset)
-    .transition().duration(400)
-    .attr("x", function(d){
-        return x(d[xvar]); // gives our x coordinate
-    }).attr("y", function(d){
-        return y(d[yvar]); // gives our y coordinate
-    }).attr("width", x.bandwidth())
-    .attr("height", function(d) { return sh - y(d[yvar]); })
-    .style("fill", "#69b3a2" ).attr("opacity", 4);
-    }
     svg_name.selectAll("circle")
     .data(dataset) // gets the datas
     .enter()
@@ -649,6 +637,21 @@ function drawBar(data, xvar, yvar, svg_name, graph_name) {
     .attr("height", function(d) { return sh - y(d[yvar]); })
     .style("fill", "#69b3a2" ).attr("opacity", 4);
 
+
+    var xlab = 'x axis'
+    var ylab = 'y axis'
+
+    svg_name.append("text")             
+    .attr("transform",
+          "translate(600,180)")
+    .style("text-anchor", "middle")
+    .text(xlab);
+
+    svg_name.append("text")
+    .attr("transform",
+    "translate(0,-15)")
+    .style("text-anchor", "middle")
+    .text(ylab);  
 }
 
 //ADD A BAR CHART 
