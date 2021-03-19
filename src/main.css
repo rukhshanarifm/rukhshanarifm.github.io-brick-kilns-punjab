@@ -20,6 +20,11 @@ h1 {
   text-align: center;
 }
 
+h3 {
+  font-weight: normal;
+  text-align: center;
+}
+
 #arrow-down {
   position: relative;
   bottom: -30px;
@@ -41,6 +46,7 @@ h1 {
 #centered-bottom > p{
   position: relative;
   text-align: center;
+  margin-top:-50px;
 
 }
 
@@ -55,10 +61,10 @@ footer {
 }
 
 #intro {
-  display: flex;
-  flex-direction:row;
-  padding:5px; /* this */
-  font-size: 13px;
+  margin: 50px;
+  margin-top:-30px;
+  padding: 20px; /* this */
+
 }
 table {
   margin-top:-20px;
@@ -107,8 +113,7 @@ table {
   font-weight: normal;
 }
 
-#no-plot {
-}
+
 #test {
   margin-left:700px;
   margin-top: -100px;
@@ -118,6 +123,13 @@ table {
   margin: auto;
   text-align: center;
 }
+footer {
+  text-align: center;
+  height: 20px;
+  flex-shrink: 0;
+  background-color:teal;
+}
+
 #plots {
   background: #FFFAF1;
   display: flex;
@@ -140,6 +152,7 @@ margin-left: -600px;
 .county:hover{
   fill: gray;
 }
+
 
 g{
   color: #FDF1E7;
