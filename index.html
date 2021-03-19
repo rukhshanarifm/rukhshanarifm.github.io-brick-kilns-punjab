@@ -9,6 +9,7 @@
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js" integrity="sha256-tHoAPGoNdhIR28YHl9DWLzeRfdwigkH7OCBXMrHXhoM=" crossorigin="anonymous"></script>
     <title>Brick Kilns in Punjab</title>
+
 </head>
 
 <h1>Brick Kilns in Punjab, Pakistan</h1>
@@ -25,7 +26,7 @@
         LOREM IPSUM LOREM IPSUM LOREM IPSUM LOREM IPSUM
         LOREM IPSUM LOREM IPSUM LOREM IPSUM LOREM IPSUM
         LOREM IPSUM LOREM IPSUM LOREM IPSUM LOREM IPSUM
-        LOREM IPSUM LOREM IPSUM LOREM IPSUM LOREM IPSUM
+        LOREM IPSUM LOREM IPSUM LOREM IPSUM LOREM IPSUMbr
         LOREM IPSUM LOREM IPSUM LOREM IPSUM LOREM IPSUM
         </p>
 
@@ -62,39 +63,36 @@
      <!-- dropdown -->
      <select id="dropdown"></select>
      <button id='reset' type="button">Reset Tooltip </button>
-
     <div id = "plots"> 
-
-    <section>
         <svg id='canvas'> </svg>    
-    </section>
+        <section id='test'>        
+            <div id='hover-text'>
+                <h2 id='top-text'>Begin by hovering over the Map </h2>
+                <p>The tool tip of the map contains the following:</p>
+                <li>District Name</li>
+                <li>District Population</li>
+                <li>Average distance to closest school</li>
+                <li>Average Distance to closest Basic Health Unit</li>
+                <li>Average Minimum Wage</li>
+                <li>Average Age</li>
+                <li>Average Loan Amount</li>
+                <p>Missing Values will appear for the following districts: Mandi Bahauddin, Nankana Sahib, Bhakkar and Dera Ghazi Khan</p>
+            </div>
 
-    <section id = 'upper'>
-    <section id='test'>        
-        <div id='hover-text'>
-        <h2 id='top-text'>Begin by hovering over the Map </h2>
-        <p>The tool tip of the map contains the following:</p>
-        <li>District Name</li>
-        <li>District Population</li>
-        <li>Average distance to closest school</li>
-        <li>Average Distance to closest Basic Health Unit</li>
-        <li>Average Minimum Wage</li>
-        <p>Missing Values will appear for the following districts: Mandi Bahauddin, Nankana Sahib, Bhakkar and Dera Ghazi Khan</p>
-        </div>
-        <div id='tooltip'></div>
-        <div id='scatters'>
-        <svg id='scatter'></svg>
+            <div id='tooltip'></div>
+            
+            <div id='scatters'>
+                <svg id='scatter'></svg>
+            </div>
+        </section>
     </div>
-</section>
 
-    </section>
-
-   
-
-</div>
 
 </body>
 </div>
+
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.13.0/d3-legend.js"></script>
 <script src="bundle.js"></script>
 </html>

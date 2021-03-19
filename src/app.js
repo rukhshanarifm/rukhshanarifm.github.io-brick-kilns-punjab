@@ -39,7 +39,7 @@ var getcolorScale = function(text, res) {
 
     if (text === "population") {
         if (res == "") {
-            'white'
+            "url(#circles-1)"
         }
         if(res <= 1500000){
             return d3.schemePuBuGn[9][2]
@@ -57,14 +57,14 @@ var getcolorScale = function(text, res) {
 
     else if (text == "average_daily_wage") {
         if (res == "") {
-            return 'white'
+            return "white"
         }
         if(res <= 150){
             return d3.schemePuBuGn[9][2]
         }else if(res<= 350){
             return d3.schemePuBuGn[9][3]
         }else if(res <= 550){
-            return d3.schemePuBuGn[9][4]
+            return d3.schemePuBuGn[9][3]
         }else if (res <= 800){
             return d3.schemePuBuGn[9][5]
         }else if (res <= 1350){
@@ -75,7 +75,7 @@ var getcolorScale = function(text, res) {
 
     else if (text == "sum_of_bricks_produced"){
         if (res == "") {
-            return 'white'
+            return "white"
         }
         if(res <= 150000000){
             return d3.schemePuBuGn[9][2]
@@ -105,7 +105,7 @@ function addLegend(variable) {
     console.log(variable);
 
     if (variable === "population") {
-        var dom = [1.5, 3.5, 5.5, 8, 13.5]
+        var dom = [1.5, 3.5, 5.5, 8, 11]
         var ran = [d3.schemePuBuGn[9][1],
         d3.schemePuBuGn[9][2],
         d3.schemePuBuGn[9][3],
@@ -114,16 +114,19 @@ function addLegend(variable) {
         var colorScale = d3.scaleLinear()
         .domain(dom)
         .range(ran);
+        var title = 'Population (in millions)'
   
     }
 
     if (variable === "average_daily_wage") {
         
         var dom = ["Below Min Wage", "Equals or Above"]
-        let ran = [d3.schemePuBuGn[9][4], d3.schemePuBuGn[9][5]]
+        let ran = [d3.schemePuBuGn[9][3], d3.schemePuBuGn[9][5]]
         var colorScale = d3.scaleOrdinal()
         .domain(dom)
         .range(ran);
+
+        var title = ''
 
     }
 
@@ -139,6 +142,7 @@ function addLegend(variable) {
         .domain(dom)
         .range(ran);
   
+        var title = 'Bricks Produced (in millions)'
     }
 
     svg.append("g")
@@ -146,7 +150,7 @@ function addLegend(variable) {
       .attr("transform", "translate(20,80)");
 
     var logLegend = d3.legendColor()
-        .scale(colorScale);
+        .scale(colorScale).title(title);
     
     svg.select(".legendLog")
       .call(logLegend);
@@ -223,141 +227,27 @@ d3.json(countyURL).then(
                                             let county = educationData.find((item) => {
                                                 return item['Name'] === id
                                             })
-                                            d3.selectAll("#scatter").remove();
-                                            d3.selectAll("#scatter2").remove();
+
                                             d3.selectAll("#hover-text").remove()
-
-                                            console.log(county['Name']);
-
-                                            let filteredData = filterDistrict(tehsilData, county['Name']);
-                                            var scatter = d3.select("#scatters")
-                                            .append("svg")
-                                            .attr('id', 'scatter')
-                                            .append("g")
-                                            .attr("transform",
-                                            "translate(" + margin.left + "," + margin.top + ")");
-                                            drawBar(filteredData, 'db_tehsil', 'perc_nonzero_wage', scatter, 'nonzero_wage')
-
-                                            let filteredData2 = filterDistrict(tehsilData, county['Name']);
-                                            var scatter2 = d3.select("#scatters")
-                                            .append("svg")
-                                            .attr('id', 'scatter2')
-                                            .append("g")
-                                            .attr("transform",
-                                            "translate(" + margin.left + "," + margin.top + ")");
-                                            drawBar(filteredData2, 'db_tehsil', 'age', scatter2, 'age')
-
+                                            FilterAndDraw(tehsilData, county)
                                             addToolTip(tooltip, county);
 
                                         }).style("cursor", "pointer")
-
-                                        .on('click', (countyDataItem) => {
-                                            tooltip.transition()
-                                            .style('visibility', 'visible')
-                                            let id = countyDataItem.properties['DISTRICT']
-                                            let county = educationData.find((item) => {
-                                            return item['Name'] === id
-                                        })
-
-
-                                            d3.selectAll("#scatter").remove();
-                                            d3.selectAll("#scatter2").remove();
-                                            
-                                            console.log(county['Name']);
-                                            var xScale = d3.scaleBand()
-                                            .range([ 0, width ])
-                                            .domain(data.map(function(d) { return d['Name']; }))
-                                            .padding(0.2);
-    
-                                            var yScale = d3.scaleBand()
-                                            .range([ 0, width ])
-                                            .domain(data.map(function(d) { return d['kiln_distance_to_nearby_school']; }))
-                                            .padding(0.2);
-                                            
-                                            let subdata = filterDistrict_two(educationData, county['Name'])
-                                            //drawBubble(subdata);
-
-                                            let filteredData = filterDistrict(tehsilData, county['Name']);
-                                            var scatter = d3.select("#scatters")
-                                            .append("svg")
-                                            .attr('id', 'scatter')
-                                            .append("g")
-                                            .attr("transform",
-                                            "translate(" + margin.left + "," + margin.top + ")");
-                                            drawBar(filteredData, 'db_tehsil', 'perc_nonzero_wage', scatter, 'nonzero_wage')
-
-                                            let filteredData2 = filterDistrict(tehsilData, county['Name']);
-                                            var scatter2 = d3.select("#scatters")
-                                            .append("svg")
-                                            .attr('id', 'scatter2')
-                                            .append("g")
-                                            .attr("transform",
-                                            "translate(" + margin.left + "," + margin.top + ")");
-                                            drawBar(filteredData2, 'db_tehsil', 'age', scatter2, 'age')
-
-                                        })
                                         .on('mouseout', (countyDataItem) => {
                                             
                                             let id = countyDataItem.properties['DISTRICT']
                                             let county = educationData.find((item) => {
                                             return item['Name'] === id
                                         })
-
-                                            d3.selectAll("#scatter").remove();
-                                            d3.selectAll("#scatter2").remove();
-
-                                            console.log(county['Name']);
-                                            var xScale = d3.scaleBand()
-                                            .range([ 0, width ])
-                                            .domain(data.map(function(d) { return d['Name']; }))
-                                            .padding(0.2);
-    
-                                            var yScale = d3.scaleBand()
-                                            .range([ 0, width ])
-                                            .domain(data.map(function(d) { return d['kiln_distance_to_nearby_school']; }))
-                                            .padding(0.2);
-                                            
-                                            let subdata = filterDistrict_two(educationData, county['Name'])
-                                            //drawBubble(subdata);
-
-                                            let filteredData = filterDistrict(tehsilData, county['Name']);
-                                            var scatter = d3.select("#scatters")
-                                            .append("svg")
-                                            .attr('id', 'scatter')
-                                            .append("g")
-                                            .attr("transform",
-                                            "translate(" + margin.left + "," + margin.top + ")");
-                                            drawBar(filteredData, 'db_tehsil', 'perc_nonzero_wage', scatter, 'nonzero_wage')
-
-                                            let filteredData2 = filterDistrict(tehsilData, county['Name']);
-                                            var scatter2 = d3.select("#scatters")
-                                            .append("svg")
-                                            .attr('id', 'scatter2')
-                                            .append("g")
-                                            .attr("transform",
-                                            "translate(" + margin.left + "," + margin.top + ")");
-                                            drawBar(filteredData2, 'db_tehsil', 'age', scatter2, true)
-                                            
-                                            var thresholdScale = d3.scaleThreshold()
-                                            .domain([ 0, 1000, 2500, 5000, 10000 ])
-                                            .range(d3.range(6)
-                                            .map(function(i) { return "q" + i + "-9"}));
-                                          
-                                            var log = d3.scaleLog()
-                                            .domain([ 0.1, 100, 1000 ])
-                                            .range(["rgb(46, 73, 123)", "rgb(71, 187, 94)"]);
-                                        
-
-                                        addToolTip(tooltip, county);
+                                            FilterAndDraw(tehsilData, county);
+                                            addToolTip(tooltip, county);
                                         }) 
-                                        
 
                                         //look into render Chart
                                         function renderChart() {
-                                            //d3.selectAll("#circle").remove();
-                                            //d3.selectAll("#scatter").remove();
-                                            //d3.selectAll("#scatter2").remove();
-                                            const t = transition().duration(300);
+  
+                                            const t = transition().duration(500).delay(300)
+
                                             let map = canvas.selectAll('path').data(countyData)
 
                                             map.enter().append('path')
@@ -395,142 +285,35 @@ d3.json(countyURL).then(
                                                 return item['Name'] === id
                                             })
                                             d3.select("#hover-text").remove();
-                                            d3.selectAll("#scatter").remove();
-                                            d3.selectAll("#scatter2").remove();
                                             addToolTip(tooltip, county);
-
-                                            console.log(county['Name']);
-                                            var xScale = d3.scaleBand()
-                                            .range([ 0, width ])
-                                            .domain(data.map(function(d) { return d['Name']; }))
-                                            .padding(0.2);
-    
-                                            var yScale = d3.scaleBand()
-                                            .range([ 0, width ])
-                                            .domain(data.map(function(d) { return d['kiln_distance_to_nearby_school']; }))
-                                            .padding(0.2);
-                                            
-                                            let subdata = filterDistrict_two(educationData, county['Name'])
-
-                                            let filteredData = filterDistrict(tehsilData, county['Name']);
-                                            var scatter = d3.select("#scatters")
-                                            .append("svg")
-                                            .attr('id', 'scatter')
-                                            .append("g")
-                                            .attr("transform",
-                                            "translate(" + margin.left + "," + margin.top + ")");
-                                            drawBar(filteredData, 'db_tehsil', 'perc_nonzero_wage', scatter, 'nonzero_wage')
-
-                                            let filteredData2 = filterDistrict(tehsilData, county['Name']);
-                                            var scatter2 = d3.select("#scatters")
-                                            .append("svg")
-                                            .attr('id', 'scatter2')
-                                            .append("g")
-                                            .attr("transform",
-                                            "translate(" + margin.left + "," + margin.top + ")");
-                                            drawBar(filteredData2, 'db_tehsil', 'age', scatter2, 'age')
+                                            FilterAndDraw(tehsilData, county)
 
                                         }).style("cursor", "pointer")
-
-                                        .on('click', (countyDataItem) => {
-                                            tooltip.transition()
-                                            .style('visibility', 'visible')
+                                        .on('mouseout', (countyDataItem) => {  
                                             let id = countyDataItem.properties['DISTRICT']
                                             let county = educationData.find((item) => {
                                             return item['Name'] === id
                                         })
-
-                                            d3.selectAll("#scatter").remove();
-                                            d3.selectAll("#scatter2").remove();
-     
-                                            console.log(county['Name']);
-                                            var xScale = d3.scaleBand()
-                                            .range([ 0, width ])
-                                            .domain(data.map(function(d) { return d['Name']; }))
-                                            .padding(0.2);
-    
-                                            var yScale = d3.scaleBand()
-                                            .range([ 0, width ])
-                                            .domain(data.map(function(d) { return d['kiln_distance_to_nearby_school']; }))
-                                            .padding(0.2);
-                                            
-                                            let subdata = filterDistrict_two(educationData, county['Name'])
-                                            //drawBubble(subdata);
-
-                                            let filteredData = filterDistrict(tehsilData, county['Name']);
-                                            var scatter = d3.select("#scatters")
-                                            .append("svg")
-                                            .attr('id', 'scatter')
-                                            .append("g")
-                                            .attr("transform",
-                                            "translate(" + margin.left + "," + margin.top + ")");
-                                            drawBar(filteredData, 'db_tehsil', 'perc_nonzero_wage', scatter, 'nonzero_wage')
-
-                                            let filteredData2 = filterDistrict(tehsilData, county['Name']);
-                                            var scatter2 = d3.select("#scatters")
-                                            .append("svg")
-                                            .attr('id', 'scatter2')
-                                            .append("g")
-                                            .attr("transform",
-                                            "translate(" + margin.left + "," + margin.top + ")");
-                                            drawBar(filteredData2, 'db_tehsil', 'age', scatter2, 'age')
-
-                                        })
-                                        .on('mouseout', (countyDataItem) => {
-                                            
+                                            FilterAndDraw(tehsilData, county)
+                                            addToolTip(tooltip, county);
+                                        }).transition(t)
+                                        .attr('fill', (countyDataItem) => {
                                             let id = countyDataItem.properties['DISTRICT']
                                             let county = educationData.find((item) => {
-                                            return item['Name'] === id
-                                        })
-
-                                            d3.selectAll("#scatter").remove();
-                                            d3.selectAll("#scatter2").remove();
-
-                                            console.log(county['Name']);
-                                            
-
-                                            let filteredData = filterDistrict(tehsilData, county['Name']);
-                                            var scatter = d3.select("#scatters")
-                                            .append("svg")
-                                            .attr('id', 'scatter')
-                                            .append("g")
-                                            .attr("transform",
-                                            "translate(" + margin.left + "," + margin.top + ")");
-                                            drawBar(filteredData, 'db_tehsil', 'perc_nonzero_wage', scatter, 'nonzero_wage')
-
-                                            let filteredData2 = filterDistrict(tehsilData, county['Name']);
-                                            var scatter2 = d3.select("#scatters")
-                                            .append("svg")
-                                            .attr('id', 'scatter2')
-                                            .append("g")
-                                            .attr("transform",
-                                            "translate(" + margin.left + "," + margin.top + ")");
-                                            drawBar(filteredData2, 'db_tehsil', 'age', scatter2, 'age')
-
-
-                                        addToolTip(tooltip, county);
-                                        }) 
-
-    
-                                            .attr('fill', (countyDataItem) => {
-                                                let id = countyDataItem.properties['DISTRICT']
-                                                let county = educationData.find((item) => {
-                                                    return item['Name'] === id
-                                                })
-
-                                                let res = county[text];
-
-                                                return getcolorScale(text, res) 
-
+                                                return item['Name'] === id
                                             })
-                                            .attr('data-pop', (countyDataItem) => {
-                                                let id = countyDataItem.properties['DISTRICT']
-                                                let county = educationData.find((item) => {
-                                                    return item['Name'] === id
-                                                })
-                                                let percentage = county[text]
-                                                console.log(percentage);
-                                                return percentage                                
+                                            let res = county[text];
+
+                                            return getcolorScale(text, res) 
+
+                                        })
+                                        .attr('data-pop', (countyDataItem) => {
+                                            let id = countyDataItem.properties['DISTRICT']
+                                            let county = educationData.find((item) => {
+                                                return item['Name'] === id
+                                            })
+                                            let percentage = county[text]
+                                            return percentage                                
                                         })
                                     }
 
@@ -551,8 +334,63 @@ d3.json(countyURL).then(
 );
 
 
+function FilterAndDraw(tehsilData, county) {
+
+    d3.selectAll("#scatter").remove();
+    d3.selectAll("#scatter2").remove();
+
+    let filteredData = filterDistrict(tehsilData, county['Name']);
+    var scatter = d3.select("#scatters")
+    .append("svg")
+    .attr('id', 'scatter')
+    .append("g")
+    .attr("transform",
+    "translate(" + margin.left + "," + margin.top + ")");
+
+    var scatter2 = d3.select("#scatters")
+    .append("svg")
+    .attr('id', 'scatter2')
+    .append("g")
+    .attr("transform",
+    "translate(" + margin.left + "," + margin.top + ")");
+
+    drawBar(filteredData, 'db_tehsil', 'perc_nonzero_wage', scatter, 'nonzero_wage')
+    drawBar(filteredData, 'db_tehsil', 'perc_all', scatter2, 'perc_all')
+}
+
+
 function addToolTip(tooltip, county) {
-    tooltip.html('<div id ="later-remove"><p>' 
+
+    if (['Mandi Bahauddin', 'Nankana Sahib', 'Bhakkar', 'Dera Ghazi Khan'].indexOf(county['Name']) >= 0) {
+        tooltip.html('<div id ="later-remove"><p>' 
+        + "District: " + county['Name'] + "</p>" +
+        '<table id="tab"> <tr> <td> ' + 'Population (in millions): </td>' +
+        '<td>' + "Missing" + 
+    
+        '<tr> <td> ' + 'Average Distance to Closest School: </td>' +
+        '<td>' + "Missing"+ 
+    
+        '<tr> <td> ' + 'Average Distance to Health Facilities: </td>' +
+        '<td>' + "Missing" + 
+    
+        '<tr> <td> ' + 'Average Minimum Wage (Daily)</td>' +
+        '<td>' + "Missing" +
+        
+        '<tr> <td> ' + 'Average Age </td>' +
+        '<td>' + "Missing" + 
+    
+        '<tr> <td> ' + 'Average Loan Amount </td>' +
+        '<td>' + "Missing" +
+
+        '<tr> <td> <br><h2 id="no-plot">' + 'No Data to Plot</td>' +
+        '</h2><td>' + ""  + 
+
+        '</td> </tr></div> ')
+        d3.select("#scatter").remove()
+        d3.select("#scatter2").remove()
+
+    }
+    else {tooltip.html('<div id ="later-remove"><p>' 
     + "District: " + county['Name'] + "</p>" +
     '<table> <tr> <td> ' + 'Population (in millions): </td>' +
     '<td>' + county['population']/1000000 + ' million' + 
@@ -566,8 +404,14 @@ function addToolTip(tooltip, county) {
     '<tr> <td> ' + 'Average Minimum Wage </td>' +
     '<td>' + 'PKR ' + Math.round(county['average_daily_wage'], 2)  + 
     
-    '</td> </tr></div>')
-    tooltip.attr('data-pop', county['population'])
+    '<tr> <td> ' + 'Average Age </td>' +
+    '<td>' + Math.round(county['average_age'], 2)  + 
+
+    '<tr> <td> ' + 'Average Loan Amount </td>' +
+    '<td>' + 'PKR ' + Math.round(county['average_advance'], 2)  + 
+
+    '</td></tr></div>')}
+    
 }
 
 function drawBar(data, xvar, yvar, svg_name, graph_name) {
@@ -605,12 +449,16 @@ function drawBar(data, xvar, yvar, svg_name, graph_name) {
     .domain([0,dom]).range([ sh, 0]);
     
 
-    if (graph_name === "age") {
+    if (graph_name === "nonzero_wage") {
         var y = d3.scaleLinear()
-        .domain([0,30]).range([ sh, 0]);
-    } else if (graph_name === "nonzero_wage"){
+        .domain([0,15]).range([ sh, 0]);
+        var xlab = 'Tehsil'
+        var ylab = 'Percentage of Children earning a non-zero wage'
+    } else if (graph_name === "perc_all"){
         var y = d3.scaleLinear()
-        .domain([0,5]).range([ sh, 0]);
+        .domain([0,60]).range([ sh, 0]);
+        var xlab = 'Tehsil'
+        var ylab = 'Percentage of Children in survey responses'
     }
 
     svg_name.append("g")
@@ -628,19 +476,17 @@ function drawBar(data, xvar, yvar, svg_name, graph_name) {
     .attr("height", function(d) { return sh - y(d[yvar]); })
     .style("fill", "#69b3a2" ).attr("opacity", 4);
 
-    var xlab = 'x axis'
-    var ylab = 'y axis'
 
     svg_name.append("text")             
     .attr("transform",
           "translate(600,180)")
-    .style("text-anchor", "middle")
+    .style("text-anchor", "right")
     .text(xlab);
 
     svg_name.append("text")
     .attr("transform",
     "translate(0,-15)")
-    .style("text-anchor", "middle")
+    .style("text-anchor", "right")
     .text(ylab);  
 }
 
@@ -668,9 +514,13 @@ document.getElementById("reset").addEventListener("click", function(){
 
     document.getElementById('test').appendChild(div);
 
-    console.log(tooltip);
 });
 
+document.getElementById("centered-bottom").addEventListener("click", function(){
+    //window.scrollBy(0, 850);
+    document.getElementById('graphs').scrollIntoView() 
+
+})
 
 //ADD A BAR CHART 
 // ADD A FUNCTION TO UPDATE THE BAR GRAPH BASED ON THE SELECTED DISTRICT
