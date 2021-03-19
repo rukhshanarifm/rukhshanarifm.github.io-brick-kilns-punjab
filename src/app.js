@@ -637,7 +637,6 @@ function drawBar(data, xvar, yvar, svg_name, graph_name) {
     .attr("height", function(d) { return sh - y(d[yvar]); })
     .style("fill", "#69b3a2" ).attr("opacity", 4);
 
-
     var xlab = 'x axis'
     var ylab = 'y axis'
 
