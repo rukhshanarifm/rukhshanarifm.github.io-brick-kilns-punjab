@@ -168,7 +168,6 @@ projection = d3.geoMercator()
     .scale([175 * 20]);
 
 
-
 d3.json(districtURL).then(
     (data, error) => {
         if(error){
