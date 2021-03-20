@@ -1,10 +1,21 @@
-# Dynamic Project Scaffold
+
+# Brick Kilns in Punjab, Pakistan
+
+This website allows the viewer to understand the context of brick kilns in Pakistan's most populous province. Secondly, it provides the viewer with statistics on a district level and additional information at a sub-district (Tehsil) level. These can be viewed here: https://rukhshanarifm.github.io/rukhshanarifm.github.io-brick-kilns-punjab/
+
+Note:
+- Files that were updated are: index.html, src/main.css, src/app.js
+- Data sources are linked in the website's footer.
+- Acknowledgements and Code citations are linked towards the end of the page
+- I accidentally made a repetitive domain name (apologies!). I will fix this once it is graded.
+- Note to grader: The JavaScript code is not the best (far from it actually – please do not hate me).
+
+# Dynamic Project Scaffold (Credits: Andrew McNutt)
 
 In this folder I've provided an example project that enables you to use modern javascript tooling with as little effort as possible. This scaffold includes
 
 - a dev server that combines javascript modules and presents them to the browser. This comes with autoreload for free! It's great.
 - linters and autoformaters so you'll be able to check if your writing well styled javascript code. I have some pretty strong linting in here. You can disable them if you want, but you'll be judged.
-
 
 
 ## Setup
