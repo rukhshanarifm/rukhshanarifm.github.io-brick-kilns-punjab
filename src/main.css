@@ -61,6 +61,9 @@ footer {
   color: white;
   text-align: center;
 }
+footer a{
+  color: white;
+}
 
 #intro {
   margin: 50px;
