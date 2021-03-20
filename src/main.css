@@ -144,15 +144,27 @@ footer {
   #plots{
     display: block;
   }
-  #canvas {
-    margin-bottom: 30px;
-  }
-  #canvas svg{
 
+  #canvas {
+    transform: scale(0.65);
+    margin-left:-50px;
   }
   #test {
     margin-left:600px;
   }
+  #centered-bottom > p{
+    position: relative;
+    text-align: center;
+    margin-top:-25px;}
+
+  #test{
+    font-size: 10px;
+  }
+  #scatter, #scatter2{
+    margin-left: -680px;
+    transform: scale(0.65);
+  }
+  
 }
 
 
