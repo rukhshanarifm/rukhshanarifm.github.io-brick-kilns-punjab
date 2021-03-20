@@ -3,11 +3,11 @@ import {select} from 'd3-selection';
 import {transition} from 'd3-transition';
 import './main.css';
 
-let countyURL = 'https://gist.githubusercontent.com/saadkhalid90/96621ed3513edce398105ad58917a003/raw/e0b29f46a0a9e7a6c9016ce9b9ff88ebfcda257e/Punjab_dist.topojson'
-let educationURL = 'https://gist.githubusercontent.com/rukhshanarifm/57a73479817642481f911b0fd8d7ac66/raw/aaa27090a056c406738f1432abf1babbd6de7e60/csvjson%2520(2).json'
+let districtURL = 'https://gist.githubusercontent.com/saadkhalid90/96621ed3513edce398105ad58917a003/raw/e0b29f46a0a9e7a6c9016ce9b9ff88ebfcda257e/Punjab_dist.topojson'
+let statsURL = 'https://gist.githubusercontent.com/rukhshanarifm/57a73479817642481f911b0fd8d7ac66/raw/aaa27090a056c406738f1432abf1babbd6de7e60/csvjson%2520(2).json'
 let tehsilURL = 'https://gist.githubusercontent.com/rukhshanarifm/3f1bcea01c9bea09bbdc13e09d250aea/raw/b0cc9b71081c6679223d14740c128ac52f621149/csvjson%2520(5).json'
 
-let countyData
+let districtData
 
 var dropdown_options = [ { value: "population",
 text: "Population in 2017"}, 
@@ -169,20 +169,20 @@ projection = d3.geoMercator()
 
 
 
-d3.json(countyURL).then(
+d3.json(districtURL).then(
     (data, error) => {
         if(error){
             console.log(log)
         }else{
-            countyData = topojson.feature(data, data.objects.Punjab_dist_corr).features
+            districtData = topojson.feature(data, data.objects.Punjab_dist_corr).features
             mesh = topojson.mesh(data, data.objects.Punjab_dist_corr); 
 
-            d3.json(educationURL).then(
+            d3.json(statsURL).then(
                 (data, error) => {
                     if(error){
                         console.log(error)
                     }else{
-                        const educationData = data
+                        const statsData = data
                         d3.json(tehsilURL).then(
                             (data, error) => {
                                 if(error){
@@ -193,54 +193,54 @@ d3.json(countyURL).then(
                                         canvas.select("#legendLog").remove();
                                         addLegend('population');
                                         console.log(tehsilData);
-                                        canvas.selectAll('path').data(countyData).enter().append('path')
+                                        canvas.selectAll('path').data(districtData).enter().append('path')
                                             .attr('d', d3.geoPath().projection(projection))
-                                            .attr('class', 'county').style("stroke", "white")
+                                            .attr('class', 'district_data').style("stroke", "white")
                                             .style("stroke-width", .5)
-                                            .attr('data-dist', (countyDataItem) => {
-                                                return countyDataItem.properties['DISTRICT']
+                                            .attr('data-dist', (districtDataItem) => {
+                                                return districtDataItem.properties['DISTRICT']
                                             })
-                                            .attr('fill', (countyDataItem) => {
-                                                let id = countyDataItem.properties['DISTRICT']
-                                                let county = educationData.find((item) => {
+                                            .attr('fill', (districtDataItem) => {
+                                                let id = districtDataItem.properties['DISTRICT']
+                                                let district_data = statsData.find((item) => {
                                                     return item['Name'] === id
                                                 })
 
-                                                let res= county['population'];
+                                                let res= district_data['population'];
                                                 let text = 'population'
                                                 return getcolorScale(text, res) 
 
                                             })
-                                            .attr('data-pop', (countyDataItem) => {
-                                                let id = countyDataItem.properties['DISTRICT']
-                                                let county = educationData.find((item) => {
+                                            .attr('data-pop', (districtDataItem) => {
+                                                let id = districtDataItem.properties['DISTRICT']
+                                                let district_data = statsData.find((item) => {
                                                     return item['Name'] === id
                                                 })
-                                                let percentage = county['population']
+                                                let percentage = district_data['population']
                                                 console.log(percentage);
                                                 return percentage
                                         }).attr("transform", "scale(1.5)")
-                                        .on('mouseover', (countyDataItem)=> {
+                                        .on('mouseover', (districtDataItem)=> {
                                             tooltip.transition()
                                                 .style('visibility', 'visible')
-                                            let id = countyDataItem.properties['DISTRICT']
-                                            let county = educationData.find((item) => {
+                                            let id = districtDataItem.properties['DISTRICT']
+                                            let district_data = statsData.find((item) => {
                                                 return item['Name'] === id
                                             })
 
                                             d3.selectAll("#hover-text").remove()
-                                            FilterAndDraw(tehsilData, county)
-                                            addToolTip(tooltip, county);
+                                            FilterAndDraw(tehsilData, district_data)
+                                            addToolTip(tooltip, district_data);
 
                                         }).style("cursor", "pointer")
-                                        .on('mouseout', (countyDataItem) => {
+                                        .on('mouseout', (districtDataItem) => {
                                             
-                                            let id = countyDataItem.properties['DISTRICT']
-                                            let county = educationData.find((item) => {
+                                            let id = districtDataItem.properties['DISTRICT']
+                                            let district_data = statsData.find((item) => {
                                             return item['Name'] === id
                                         })
-                                            FilterAndDraw(tehsilData, county);
-                                            addToolTip(tooltip, county);
+                                            FilterAndDraw(tehsilData, district_data);
+                                            addToolTip(tooltip, district_data);
                                         }) 
 
                                         //look into render Chart
@@ -248,71 +248,71 @@ d3.json(countyURL).then(
   
                                             const t = transition().duration(500).delay(300)
 
-                                            let map = canvas.selectAll('path').data(countyData)
+                                            let map = canvas.selectAll('path').data(districtData)
 
                                             map.enter().append('path')
                                             .attr('d', d3.geoPath().projection(projection))
-                                            .attr('class', 'county').style("stroke", "white")
+                                            .attr('class', 'district_data').style("stroke", "white")
                                             .style("stroke-width", .5)
-                                            .attr('data-dist', (countyDataItem) => {
-                                                return countyDataItem.properties['DISTRICT']
+                                            .attr('data-dist', (districtDataItem) => {
+                                                return districtDataItem.properties['DISTRICT']
                                             })
-                                            .attr('fill', (countyDataItem) => {
-                                                let id = countyDataItem.properties['DISTRICT']
-                                                let county = educationData.find((item) => {
+                                            .attr('fill', (districtDataItem) => {
+                                                let id = districtDataItem.properties['DISTRICT']
+                                                let district_data = statsData.find((item) => {
                                                     return item['Name'] === id
                                                 })
 
-                                                let res= county['population'];
+                                                let res= district_data['population'];
                                                 let text = 'population'
                                                 return getcolorScale(text, res) 
 
                                             })
-                                            .attr('data-pop', (countyDataItem) => {
-                                                let id = countyDataItem.properties['DISTRICT']
-                                                let county = educationData.find((item) => {
+                                            .attr('data-pop', (districtDataItem) => {
+                                                let id = districtDataItem.properties['DISTRICT']
+                                                let district_data = statsData.find((item) => {
                                                     return item['Name'] === id
                                                 })
-                                                let percentage = county['population']
+                                                let percentage = district_data['population']
                                                 console.log(percentage);
                                                 return percentage
                                         }).attr("transform", "scale(1.5)")
-                                        .on('mouseover', (countyDataItem)=> {
+                                        .on('mouseover', (districtDataItem)=> {
                                             tooltip.transition()
                                                 .style('visibility', 'visible')
-                                            let id = countyDataItem.properties['DISTRICT']
-                                            let county = educationData.find((item) => {
+                                            let id = districtDataItem.properties['DISTRICT']
+                                            let district_data = statsData.find((item) => {
                                                 return item['Name'] === id
                                             })
                                             d3.select("#hover-text").remove();
-                                            FilterAndDraw(tehsilData, county)
-                                            addToolTip(tooltip, county);
+                                            FilterAndDraw(tehsilData, district_data)
+                                            addToolTip(tooltip, district_data);
 
                                         }).style("cursor", "pointer")
-                                        .on('mouseout', (countyDataItem) => {  
-                                            let id = countyDataItem.properties['DISTRICT']
-                                            let county = educationData.find((item) => {
+                                        .on('mouseout', (districtDataItem) => {  
+                                            let id = districtDataItem.properties['DISTRICT']
+                                            let district_data = statsData.find((item) => {
                                             return item['Name'] === id
                                         })
-                                            FilterAndDraw(tehsilData, county)
-                                            addToolTip(tooltip, county);
+                                            FilterAndDraw(tehsilData, district_data)
+                                            addToolTip(tooltip, district_data);
                                         }).transition(t)
-                                        .attr('fill', (countyDataItem) => {
-                                            let id = countyDataItem.properties['DISTRICT']
-                                            let county = educationData.find((item) => {
+                                        .attr('fill', (districtDataItem) => {
+                                            let id = districtDataItem.properties['DISTRICT']
+                                            let district_data = statsData.find((item) => {
                                                 return item['Name'] === id
                                             })
-                                            let res = county[text];
+                                            let res = district_data[text];
 
                                             return getcolorScale(text, res) 
 
                                         })
-                                        .attr('data-pop', (countyDataItem) => {
-                                            let id = countyDataItem.properties['DISTRICT']
-                                            let county = educationData.find((item) => {
+                                        .attr('data-pop', (districtDataItem) => {
+                                            let id = districtDataItem.properties['DISTRICT']
+                                            let district_data = statsData.find((item) => {
                                                 return item['Name'] === id
                                             })
-                                            let percentage = county[text]
+                                            let percentage = district_data[text]
                                             return percentage                                
                                         })
                                     }
@@ -334,12 +334,12 @@ d3.json(countyURL).then(
 );
 
 
-function FilterAndDraw(tehsilData, county) {
+function FilterAndDraw(tehsilData, district_data) {
 
     d3.selectAll("#scatter").remove();
     d3.selectAll("#scatter2").remove();
 
-    let filteredData = filterDistrict(tehsilData, county['Name']);
+    let filteredData = filterDistrict(tehsilData, district_data['Name']);
     var scatter = d3.select("#scatters")
     .append("svg")
     .attr('id', 'scatter')
@@ -359,11 +359,11 @@ function FilterAndDraw(tehsilData, county) {
 }
 
 
-function addToolTip(tooltip, county) {
+function addToolTip(tooltip, district_data) {
 
-    if (['Mandi Bahauddin', 'Nankana Sahib', 'Bhakkar', 'Dera Ghazi Khan'].indexOf(county['Name']) >= 0) {
+    if (['Mandi Bahauddin', 'Nankana Sahib', 'Bhakkar', 'Dera Ghazi Khan'].indexOf(district_data['Name']) >= 0) {
         tooltip.html('<div id ="later-remove"><p>' 
-        + "District: " + county['Name'] + "</p>" +
+        + "District: " + district_data['Name'] + "</p>" +
         '<table id="tab"> <tr> <td> ' + 'Population (in millions): </td>' +
         '<td>' + "Missing" + 
     
@@ -391,24 +391,24 @@ function addToolTip(tooltip, county) {
 
     }
     else {tooltip.html('<div id ="later-remove"><p>' 
-    + "District: " + county['Name'] + "</p>" +
+    + "District: " + district_data['Name'] + "</p>" +
     '<table> <tr> <td> ' + 'Population (in millions): </td>' +
-    '<td>' + county['population']/1000000 + ' million' + 
+    '<td>' + district_data['population']/1000000 + ' million' + 
 
     '<tr> <td> ' + 'Average Distance to Closest School: </td>' +
-    '<td>' + Math.round(county['kiln_distance_to_nearby_school'], 2) + ' km'+ 
+    '<td>' + Math.round(district_data['kiln_distance_to_nearby_school'], 2) + ' km'+ 
 
     '<tr> <td> ' + 'Average Distance to Health Facilities: </td>' +
-    '<td>' + Math.round(county['kiln_closest_basichealthunit'], 2) + ' km' + 
+    '<td>' + Math.round(district_data['kiln_closest_basichealthunit'], 2) + ' km' + 
 
     '<tr> <td> ' + 'Average Minimum Wage </td>' +
-    '<td>' + 'PKR ' + Math.round(county['average_daily_wage'], 2)  + 
+    '<td>' + 'PKR ' + Math.round(district_data['average_daily_wage'], 2)  + 
     
     '<tr> <td> ' + 'Average Age </td>' +
-    '<td>' + Math.round(county['average_age'], 2)  + 
+    '<td>' + Math.round(district_data['average_age'], 2)  + 
 
     '<tr> <td> ' + 'Average Loan Amount </td>' +
-    '<td>' + 'PKR ' + Math.round(county['average_advance'], 2)  + 
+    '<td>' + 'PKR ' + Math.round(district_data['average_advance'], 2)  + 
 
     '</td></tr></div>')}
     
